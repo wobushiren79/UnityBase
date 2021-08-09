@@ -1,0 +1,92 @@
+物理
+1.如果不需要物理效果的游戏可以关闭物理   ProjectySettings->Physics->Audio Simulation
+
+2.控制物理的调用次数 
+	ProjectySettings->Time->Fixed TimeStep  FixedUpdate的间隔时间 越大刷新间隔越大 性能越好
+	ProjectySettings->Time->Maximum Allowed Timestep 单帧物理最大调用次数，值越小  调用次数越少 0.1合适
+
+3.减少Raycast的使用 如果要使用 可以通过JobSystem的RaycastCommand将射线转移到子线程
+
+4.减少不必要的物理碰撞 ProjectySettings->Physics 中关闭层级的关联
+
+5.ProjectySettings->Physics->Audio Sync Transforms 勾选Auto Sync Transforms后，发生Physics Query时，Unity会将Rigidbody/Collider的Tranform变化同步到物理引擎，如Position，Scale等
+
+6.建议将逻辑代码写到 update 中 而不是 FixedUpdate 中
+-------------------------------------------------------------------------------------------
+动画
+1.减少Active中的Animator，如果在屏幕外可以先关闭，如果在UI上 可以考虑用dotween来实现
+
+2.减少开启了ApplyRootMotion的动画 ，如果动画不需要产生位移 则不必开启
+
+3.开启FBX->Rig->Optimize Game Objects 在勾选的状态下，Unity在处理动画片段时，会移除Transform的层级信息，该设置对于Animators.Update的耗时提升都非常明显，可以极大程度上降低主线程的动画耗时，把宝贵的主线程时间腾出来给更复杂的计算逻辑
+
+4.控制Animator.Initialize触发频率 减少战斗中 setActive的操作，如果有大量动画预置， 可以关闭动画，并移出屏幕
+
+5.AlwaysAnimate状态下，当角色在屏幕外时，仍会继续产生Update开销。建议将这个选项改为CullUpdateTransforms或CullCompletely。CullUpdateTransforms适用于动画会产生位移的Animator Controller，CullCompletely适用于动画不会产生位移的Animator Controller
+
+6.群体动画渲染建议使用GPU Skinning+GPU Instancing 建议关闭Unity引擎原生的GPU Skinning操作，该操作会导致额外的开销，会导致主线程或渲染线程无效的等待。同时，对于大量同种怪物的需求，我们非常建议通过开源库中的GPU Skinning和GPU Instancing来进行渲染，这样既可以降低Animators.Update耗时，又能达到合批的效果。
+相关的开源库链接：
+https://lab.uwa4d.com/lab/5bc6f85504617c5805d4eb0a
+https://lab.uwa4d.com/lab/5bc5511204617c5805d4e9cf
+-------------------------------------------------------------------------------------------
+粒子
+1.粒子系统数量 粒子系统数量，
+	UWA推荐不超过600（1G机型）这个数量是指内存中所有的ParticleSystem的总数量，包含正在播放的和处于缓存池中的
+	Playing的粒子系统数量，这里指的是正在播放的ParticleSystem组件的数量，这个包含了屏幕内和屏幕外的，我们建议在一帧中出现的数量峰值不超过50（1G机型）
+
+2.关于ParticleSystem.Prewarm 开启该选项的粒子系统在场景中实例化或者由Deactive转为active时，会立即执行一次完整的模拟 Prewarm的操作通常都有一定的耗时，建议在可以不用的情况下，将其关闭
+
+3.尝试关闭离当前视域体或当前相机较远的粒子系统，离近后再进行开启，从而避免不必要的粒子系统Update的开销
+
+4.尽可能降低粒子特效在屏幕中的覆盖面积，覆盖面积越大，层叠数越多，其渲染开销越大
+
+5.粒子系统建议不要开启Collison或Trigger功能，否则会有较高的物理开销
+-------------------------------------------------------------------------------------------
+资源
+1.Resources.UnloadUnusedAssets  一般情况下，场景切换过程中， 引擎会自动调用一次，UWA建议在10~15分钟的时候手动调用一次 ，开销主要取决于场景中的Assets和Object的数量，数量越多，则耗时越高
+
+2.GC.Collect GC调用频率主要受堆内存影响，当函数的堆内存分配量越多、越频繁，GC就会越快到来
+
+3. Instantiate 当项目的资源越复杂、实例化数量越多，卡顿感就越明显
+	频繁实例化/Destroy
+	Activate和Deactivate
+
+4.避免使用Standard，使用其他Shader代替Standard Shader
+
+5.解决Shader冗余问题 如果Shader资源并不是缓存在内存中的，切出场景时则会释放Shader，切入场景会加载Shader，导致了大量的重复开销。解决这个问题，只需要把Shader进行剥离，通过依赖关系将其做成单独的AB，然后加载后就缓存住不卸载，那么后续就不需要再对此Shader进行加载了
+
+6.Shader通过ShaderVariantCollection进行加载，并在加载后并Warmup，从而避免Shader在游戏运行时产生Shader.CreateGPUProgram的耗时
+-------------------------------------------------------------------------------------------
+渲染
+1.降低Batch的方式通常有动态合批、静态合批、GPU Instancing和SRP Batcher这四种
+	但是使用GPU Instancing有如下注意点：
+		兼容的平台及API
+		渲染实例的网格与材质相同
+		Shader支持GPU Instancing
+		不支持SkinnedMeshRenderer
+		在一些特殊情况下，大量半透明物体的GPU Instancing渲染耗时可能会带来很高的耗时
+	而在使用SRP Batcher时，仍需要注意：
+		Shader需要兼容SRP
+		SRP Batcher暂时不支持粒子系统
+		Shader变体会打断DrawCall的合批	
+
+2.Triangle面片数越高会导致渲染的耗时越高 一般建议通过LOD工具减少场景中的面片数，进而降低渲染的开销
+
+3.Culling耗时与场景中的GameObject小物件数量的相关性比较大。这种情况建议研发团队优化场景制作方式 ，关注场景中是否存在过多小物件，导致Culling耗时增高。可以考虑采用动态加载、分块显示，或者Culling Group、Culling Distance等方法优化Culling的耗时
+
+4.如果项目使用了多线程渲染且开启了Occlusion Culling，通常会导致子线程的压力过大导致整体Culling过高 由于Occlusion Culling需要根据场景中的物体计算遮挡关系，因此开启Occlusion Culling虽然降低了渲染消耗，其本身的性能开销却也是值得注意的，并不一定适用于所有场景。这种情况建议研发团队选择性地关闭一部分Occlusion Culling去测试一下渲染数据的整体消耗进行对比，再决定是否需要开启这个功能
+
+5.Render.Mesh开销过高，通常是由于不能合批的对象较多导致的，可以从如下几点进行优化
+	对于不透明的渲染队列，建议对Material的冗余进行排查，如原本一样的材质球因为实例不同而导致不能合批，可以通过UWA的在线AssetBundle检测，对AssetBundle中的Material冗余进行排查
+	要考虑半透明的对象是否存在穿插的现象，可以通过调整RenderQueue来增大相同Material的对象进行合批
+
+6.开启多线程渲染  Project Settings->Player->Graphics Jobs
+	
+	
+、
+
+
+
+
+
+
