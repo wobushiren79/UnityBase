@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-
-[CustomEditor(typeof(BaseUIComponent),true)]
+using System.Text;
+[InitializeOnLoad]
+[CustomEditor(typeof(BaseUIComponent), true)]
 public class InspectorBaseUIComponent : Editor
 {
     protected readonly static string scrpitsTemplatesPath = "/Editor/ScrpitsTemplates/UI_BaseUIComponent.txt";
@@ -10,18 +11,21 @@ public class InspectorBaseUIComponent : Editor
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
-
-        if (EditorUI.GUIButton("生成UICompont脚本", 120))
+        if (!EditorUtil.CheckIsPrefabMode())
+        {
+            return;
+        }
+        GUILayout.Space(50);
+        if (EditorUI.GUIButton("生成UICompont脚本", 200))
         {
             HandleForCreateUIComponent();
         }
-
     }
 
-    //Hierarchy视图
-    [MenuItem("GameObject/创建/UIComponent")]
-    //Projects视图
-    [MenuItem("Assets/创建/UIComponent")]
+    ////Hierarchy视图
+    //[MenuItem("GameObject/创建/UIComponent", false, 10)]
+    ////Projects视图
+    //[MenuItem("Assets/创建/UIComponent", false, 10)]
     public static void HandleForCreateUIComponent()
     {
         GameObject objSelect = Selection.activeGameObject;
@@ -32,7 +36,7 @@ public class InspectorBaseUIComponent : Editor
 
         //获取最后一个/的索引
         int lastIndex = path[0].LastIndexOf('/');
-        string createPath = path[0].Substring(0,lastIndex);
+        string createPath = path[0].Substring(0, lastIndex);
         //规则替换
         Dictionary<string, string> dicReplace = ReplaceRole("UI" + objSelect.name);
         //创建文件
@@ -50,6 +54,13 @@ public class InspectorBaseUIComponent : Editor
         //这里实现自定义的一些规则  
         Dictionary<string, string> dicReplaceData = new Dictionary<string, string>();
         dicReplaceData.Add("#ClassName#", className);
+        Dictionary<string, Component> dicSelect = HierarchySelect.dicSelectObj;
+        StringBuilder content = new StringBuilder();
+        foreach (var itemSelect in dicSelect)
+        {
+            content.Append("public " + dicSelect.Values.GetType().Name + " ui_" + itemSelect.Key + ";");
+        }
+        dicReplaceData.Add("#PropertyList#", className);
         return dicReplaceData;
     }
 

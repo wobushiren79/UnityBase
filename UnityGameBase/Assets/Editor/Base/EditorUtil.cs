@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
+using UnityEditor.Experimental.SceneManagement;
 using UnityEngine;
 
 public static class EditorUtil
@@ -124,4 +125,30 @@ public static class EditorUtil
         //创建文件
         FileUtil.CreateTextFile(createPath, fileName + ".cs", viewScriptContent);
     }
+
+    /// <summary>
+    /// 检测是否处于Prefab Mode
+    /// </summary>
+    /// <param name="prefabStage"></param>
+    /// <returns></returns>
+    public static bool CheckIsPrefabMode(out PrefabStage prefabStage)
+    {
+        prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+        if (prefabStage != null)
+        {
+            // 当前正处于Prefab Mode
+            return true;
+        }
+        else
+        {
+            // 当前没有处于Prefab Mode
+            return false;
+        }
+    }
+    public static bool CheckIsPrefabMode()
+    {
+       return  CheckIsPrefabMode(out PrefabStage prefabStage);
+    }
+
+
 }
