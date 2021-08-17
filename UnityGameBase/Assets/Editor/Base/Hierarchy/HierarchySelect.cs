@@ -9,22 +9,64 @@ public class HierarchySelect
     static HierarchySelect()
     {
         EditorApplication.hierarchyWindowItemOnGUI += OnHierarchyShowSelect;
+        EditorApplication.hierarchyChanged += OnHierarchyChanged;
+       
     }
 
     //选择列表
     public static Dictionary<string, Component> dicSelectObj = new Dictionary<string, Component>();
+    public static BaseUIComponent baseUIComponent = null;
 
-    private static void OnHierarchyShowSelect(int instanceid, Rect selectionrect)
+    /// <summary>
+    /// 视窗改变
+    /// </summary>
+    private static void OnHierarchyChanged()
     {
         if (!EditorUtil.CheckIsPrefabMode(out var prefabStage))
         {
-            dicSelectObj.Clear();
             return;
         }
+        dicSelectObj.Clear();
+        baseUIComponent = null;
+        GameObject obj =  Selection.activeGameObject;
+        if (obj != null)
+        {
+            LogUtil.Log(obj.name);
+        }
+        else
+        {
+      
+        }
+        return;
+    }
+
+    /// <summary>
+    /// 视窗元素
+    /// </summary>
+    /// <param name="instanceid"></param>
+    /// <param name="selectionrect"></param>
+    private static void OnHierarchyShowSelect(int instanceid, Rect selectionrect)
+    {
+        //如果不是编辑模式则不进行操作
+        if (!EditorUtil.CheckIsPrefabMode(out var prefabStage))
+        {
+            return;
+        }
+        //如果不是UI也不进行操作
+        if (baseUIComponent == null)
+        {
+            return;
+        }
+
         //获取当前obj
         var go = EditorUtility.InstanceIDToObject(instanceid) as GameObject;
         if (go == null)
             return;
+        if (baseUIComponent == null)
+        {
+            baseUIComponent = go.GetComponent<BaseUIComponent>();
+        }
+
         //控制开关
         var selectBox = new Rect(selectionrect);
         selectBox.x = selectBox.xMax;

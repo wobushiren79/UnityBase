@@ -2,6 +2,8 @@
 using UnityEditor;
 using UnityEngine;
 using System.Text;
+using System;
+
 [InitializeOnLoad]
 [CustomEditor(typeof(BaseUIComponent), true)]
 public class InspectorBaseUIComponent : Editor
@@ -20,6 +22,10 @@ public class InspectorBaseUIComponent : Editor
         {
             HandleForCreateUIComponent();
         }
+        if (EditorUI.GUIButton("设置UICompont数据", 200))
+        {
+            HandleForSetUICompontData();
+        }
     }
 
     ////Hierarchy视图
@@ -30,17 +36,58 @@ public class InspectorBaseUIComponent : Editor
     {
         GameObject objSelect = Selection.activeGameObject;
         string fileName = "UI" + objSelect.name + "Component";
+        string baseFileName = "UI" + objSelect.name;
 
-        string templatesPath = Application.dataPath + scrpitsTemplatesPath;
-        string[] path = EditorUtil.GetScriptPath(fileName);
+        string templatesPath = Application.dataPath + scrpitsTemplatesPath;   
 
+        if (!EditorUtil.CheckIsPrefabMode(out var prefabStage))
+        {
+            LogUtil.Log("没有进入编辑模式");
+            return;
+        }
+        string[] path = EditorUtil.GetScriptPath(baseFileName);
+        //string path = prefabStage.assetPath;
         //获取最后一个/的索引
-        int lastIndex = path[0].LastIndexOf('/');
-        string createPath = path[0].Substring(0, lastIndex);
+        if (path.Length == 0)
+        {
+            LogUtil.Log("没有名字为"+ baseFileName + "的类,请先创建");
+            return;
+        }
         //规则替换
         Dictionary<string, string> dicReplace = ReplaceRole("UI" + objSelect.name);
         //创建文件
-        EditorUtil.CreateClass(dicReplace, templatesPath, fileName, createPath);
+        EditorUtil.CreateClass(dicReplace, templatesPath, fileName, path[0]);
+
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+    }
+
+    /// <summary>
+    /// 处理 设置UI的值
+    /// </summary>
+    public void HandleForSetUICompontData()
+    {
+        GameObject objSelect = Selection.activeGameObject;
+        BaseUIComponent uiComponent = objSelect.GetComponent<BaseUIComponent>();
+        Dictionary<string, object> dicData = ReflexUtil.GetAllNameAndValue(uiComponent);
+        foreach (var itemData in dicData)
+        {
+            string itemKey = itemData.Key;
+            object itemValue = itemData.Value;
+            if (itemKey.Contains("ui_"))
+            {
+                //获取选中的控件
+                Dictionary<string, Component> dicSelect = HierarchySelect.dicSelectObj;
+                //对比选中的控件和属性名字是否一样
+                if (dicSelect.TryGetValue(itemKey.Replace("ui_",""),out Component itemComponent))
+                {
+                    ReflexUtil.SetValueByName(uiComponent, itemKey, itemComponent);
+                }
+            }
+        }
+        EditorUtility.SetDirty(objSelect);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
     }
 
     /// <summary>
@@ -58,9 +105,10 @@ public class InspectorBaseUIComponent : Editor
         StringBuilder content = new StringBuilder();
         foreach (var itemSelect in dicSelect)
         {
-            content.Append("public " + dicSelect.Values.GetType().Name + " ui_" + itemSelect.Key + ";");
+            Type type = itemSelect.Value.GetType();
+            content.Append("    public " + type.Name + " ui_" + itemSelect.Key + ";\r\n\r\n");
         }
-        dicReplaceData.Add("#PropertyList#", className);
+        dicReplaceData.Add("#PropertyList#", content.ToString());
         return dicReplaceData;
     }
 

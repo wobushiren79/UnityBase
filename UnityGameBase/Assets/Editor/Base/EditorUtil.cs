@@ -81,14 +81,18 @@ public static class EditorUtil
     /// <returns></returns>
     public static string[] GetScriptPath(string scriptName)
     {
-        string[] uuids = AssetDatabase.FindAssets(scriptName);
-        string[] arrayData = new string[uuids.Length];
+        string[] uuids = AssetDatabase.FindAssets(scriptName,new string[] { "Assets" } );
+        List<string> listData = new List<string>();
         for (int i = 0; i < uuids.Length; i++)
         {
             string uuid = uuids[i];
-            arrayData[i] = AssetDatabase.GUIDToAssetPath(uuid).Replace((@"/" + scriptName + ".cs"), "");
+            string uuidPath = AssetDatabase.GUIDToAssetPath(uuid);
+            if (uuidPath.Contains(scriptName + ".cs"))
+            {
+                listData.Add(uuidPath.Replace((@"/" + scriptName + ".cs"), ""));
+            }
         }
-        return arrayData;
+        return listData.ToArray();
     }
 
     /// <summary>

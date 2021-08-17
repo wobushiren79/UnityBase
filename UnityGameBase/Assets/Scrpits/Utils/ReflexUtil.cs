@@ -106,10 +106,10 @@ public class ReflexUtil : ScriptableObject
     /// <typeparam name="T"></typeparam>
     /// <param name="classType"></param>
     /// <returns></returns>
-    public static Dictionary<String, object> GetAllNameAndValue<T>(T classType)
+    public static Dictionary<string, object> GetAllNameAndValue<T>(T classType)
     {
-        Dictionary<String, object> listData = new Dictionary<string, object>();
-        Type type = typeof(T);
+        Dictionary<string, object> listData = new Dictionary<string, object>();
+        Type type = classType.GetType();
         FieldInfo[] fieldInfos = type.GetFields();
 
         if (fieldInfos == null)
