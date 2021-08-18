@@ -8,7 +8,7 @@ public partial class UITest
 
     public Button ui_Button;
 
-    public RectTransform ui_ChildText;
+    public RectTransform ui_Button_4;
 
 
 }

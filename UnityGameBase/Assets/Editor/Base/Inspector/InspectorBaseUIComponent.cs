@@ -58,6 +58,7 @@ public class InspectorBaseUIComponent : Editor
         //创建文件
         EditorUtil.CreateClass(dicReplace, templatesPath, fileName, path[0]);
 
+        EditorUtility.SetDirty(objSelect);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
     }
@@ -65,9 +66,11 @@ public class InspectorBaseUIComponent : Editor
     /// <summary>
     /// 处理 设置UI的值
     /// </summary>
-    public void HandleForSetUICompontData()
+    public static void HandleForSetUICompontData()
     {
         GameObject objSelect = Selection.activeGameObject;
+        if (objSelect == null)
+            return;
         BaseUIComponent uiComponent = objSelect.GetComponent<BaseUIComponent>();
         Dictionary<string, object> dicData = ReflexUtil.GetAllNameAndValue(uiComponent);
         foreach (var itemData in dicData)
@@ -105,6 +108,8 @@ public class InspectorBaseUIComponent : Editor
         StringBuilder content = new StringBuilder();
         foreach (var itemSelect in dicSelect)
         {
+            if (itemSelect.Value == null)
+                continue;
             Type type = itemSelect.Value.GetType();
             content.Append("    public " + type.Name + " ui_" + itemSelect.Key + ";\r\n\r\n");
         }

@@ -2,6 +2,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using UnityEditor.Experimental.SceneManagement;
+using System;
 
 [InitializeOnLoad]
 public class HierarchySelect
@@ -17,6 +19,7 @@ public class HierarchySelect
     public static Dictionary<string, Component> dicSelectObj = new Dictionary<string, Component>();
     public static BaseUIComponent baseUIComponent = null;
 
+
     /// <summary>
     /// 视窗改变
     /// </summary>
@@ -28,16 +31,33 @@ public class HierarchySelect
         }
         dicSelectObj.Clear();
         baseUIComponent = null;
-        GameObject obj =  Selection.activeGameObject;
-        if (obj != null)
+        GameObject root = prefabStage.prefabContentsRoot;
+        baseUIComponent = root.GetComponent<BaseUIComponent>();
+
+        if (baseUIComponent == null) return;
+        //设置初始化数据
+        Dictionary<string, Type> dicData = ReflexUtil.GetAllNameAndType(baseUIComponent);
+        foreach (var itemData in dicData)
         {
-            LogUtil.Log(obj.name);
+            string itemKey = itemData.Key;
+            Type itemValue = itemData.Value;
+            if (itemKey.Contains("ui_"))
+            {
+                string componentName = itemKey.Replace("ui_", "");
+                if (itemValue != null)
+                {
+                    Component[] listRootComponent = root.GetComponentsInChildren(itemValue);
+                    foreach (Component itemRootComponent in listRootComponent)
+                    {
+                        if (itemRootComponent.name.Equals(componentName))
+                        {
+                            dicSelectObj.Add(componentName, itemRootComponent);
+                        }
+                    }
+                }
+            }
         }
-        else
-        {
-      
-        }
-        return;
+        return;    
     }
 
     /// <summary>

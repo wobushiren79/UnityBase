@@ -125,6 +125,30 @@ public class ReflexUtil : ScriptableObject
     }
 
     /// <summary>
+    /// 根据反射获取书友属性名称及类型
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="classType"></param>
+    /// <returns></returns>
+    public static Dictionary<string, Type> GetAllNameAndType<T>(T classType)
+    {
+        Dictionary<string, Type> listData = new Dictionary<string, Type>();
+        Type type = classType.GetType();
+        FieldInfo[] fieldInfos = type.GetFields();
+
+        if (fieldInfos == null)
+            return listData;
+
+        int propertyInfoSize = fieldInfos.Length;
+        for (int i = 0; i < propertyInfoSize; i++)
+        {
+            FieldInfo fieldInfo = fieldInfos[i];
+            listData.Add(fieldInfo.Name, fieldInfo.FieldType);
+        };
+        return listData;
+    }
+
+    /// <summary>
     /// 根据反射 设置值
     /// </summary>
     /// <typeparam name="T"></typeparam>
