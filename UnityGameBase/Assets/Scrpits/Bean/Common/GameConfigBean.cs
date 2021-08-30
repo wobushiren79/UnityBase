@@ -30,4 +30,22 @@ public class GameConfigBean
 
     //UI大小
     public float uiSize = 1f;
+
+    /// <summary>
+    /// 获取当前语言
+    /// </summary>
+    /// <returns></returns>
+    public LanguageEnum GetLanguage()
+    {
+        return EnumUtil.GetEnum<LanguageEnum>(language);
+    }
+
+    /// <summary>
+    /// 设置语言
+    /// </summary>
+    /// <param name="language"></param>
+    public void SetLanguage(LanguageEnum language)
+    {
+        this.language = EnumUtil.GetEnumName(language);
+    }
 }
