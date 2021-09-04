@@ -1,67 +1,87 @@
-﻿using UnityEditor;
+﻿using System.Collections.Generic;
+using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.UIElements;
 
-public class NodeBaseView
+public class NodeBaseView : GraphView
 {
-    public Rect rect;
-    public string title;
-    public bool isDragged;
-
-    public GUIStyle style;
-
-    public NodeBaseView(Vector2 position, float width, float height, GUIStyle nodeStyle)
+    public NodeBaseView()
     {
-        rect = new Rect(position.x, position.y, width, height);
-        style = nodeStyle;
-    }
+        styleSheets.Add(Resources.Load<StyleSheet>("NodeBackground"));
 
-    public void Drag(Vector2 delta)
-    {
-        rect.position += delta;
-    }
+        //设置缩放
+        SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
 
-    public void Draw()
-    {
-        GUI.Box(rect, title, style);
+        this.AddManipulator(new ContentDragger());
+        this.AddManipulator(new SelectionDragger());
+        this.AddManipulator(new RectangleSelector());
+
+        //设置背景
+        var gird = new GridBackground();
+        Insert(0,gird);
+        gird.StretchToParentSize();
+
+
+        NodeBase node = GenerateEntryPointNode();
+        AddElement(node);
     }
 
     /// <summary>
-    /// UI操作处理
+    /// 通用端口配置
     /// </summary>
-    /// <param name="e"></param>
+    /// <param name="node"></param>
+    /// <param name="protDirection"></param>
+    /// <param name="capacity"></param>
     /// <returns></returns>
-    public bool ProcessEvents(Event e)
+    private Port GeneratePort(NodeBase node, Direction protDirection, Port.Capacity capacity = Port.Capacity.Single)
     {
-        switch (e.type)
+        return node.InstantiatePort(Orientation.Horizontal, protDirection, capacity, typeof(float));
+    }
+
+    /// <summary>
+    /// 节点端口链接配置 
+    /// </summary>
+    /// <param name="startPort"></param>
+    /// <param name="nodeAdapter"></param>
+    /// <returns></returns>
+    public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
+    {
+        var compatiblePorts = new List<Port>();
+
+        ports.ForEach((port) =>
         {
-            case EventType.MouseDown:
-                if (e.button == 0)
-                {
-                    if (rect.Contains(e.mousePosition))
-                    {
-                        isDragged = true;
-                        GUI.changed = true;
-                    }
-                    else
-                    {
-                        GUI.changed = true;
-                    }
-                }
-                break;
+            //不能链接自己端口
+            if (startPort != port && startPort.node != port.node)
+            {
+                compatiblePorts.Add(port);
+            }
+        });
+        return compatiblePorts;
+    }
 
-            case EventType.MouseUp:
-                isDragged = false;
-                break;
+    private NodeBase GenerateEntryPointNode()
+    {
+        var node = new NodeBase
+        {
+            title = "Start",
+            id = SystemUtil.GetUUID(SystemUtil.UUIDTypeEnum.N),
+            textContent = "Test",
+            entryPoint = true
+        };
 
-            case EventType.MouseDrag:
-                if (e.button == 0 && isDragged)
-                {
-                    Drag(e.delta);
-                    e.Use();
-                    return true;
-                }
-                break;
-        }
-        return false;
+        //配置节点的端口
+        var generatePort = GeneratePort(node, Direction.Output);
+        generatePort.portName = "Next";
+        node.outputContainer.Add(generatePort);
+
+        //刷新一下
+        node.RefreshExpandedState();
+        node.RefreshPorts();
+
+        //设置节点位置
+        node.SetPosition(new Rect(100, 200, 100, 150));
+
+        return node;
     }
 }
