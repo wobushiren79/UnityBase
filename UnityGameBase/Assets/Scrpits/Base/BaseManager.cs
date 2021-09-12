@@ -8,6 +8,18 @@ using System;
 
 public class BaseManager : BaseMonoBehaviour
 {
+
+    public virtual void InitData<T>(Dictionary<long, T> dic, List<T> listData) where T : BaseBean
+    {
+        dic.Clear();
+        for (int i = 0; i < listData.Count; i++)
+        {
+            T itemHairInfo = listData[i];
+            dic.Add(itemHairInfo.id, itemHairInfo);
+        }
+    }
+
+
     protected List<T> GetAllModel<T>(string assetBundlePath) where T : UnityEngine.Object
     {
         return GetAllModel<T>(assetBundlePath, null);
@@ -160,7 +172,30 @@ public class BaseManager : BaseMonoBehaviour
 
         LoadAddressablesUtil.LoadAssetAsync<T>(keyName, data =>
         {
-            listModel.Add(keyName, data.Result);
+            if (data.Result != null)
+                listModel.Add(keyName, data.Result);
+            callBack?.Invoke(data.Result);
+        });
+    }
+
+    protected void GetModelForAddressables<T>(Dictionary<long, T> listModel, long id, string keyName, Action<T> callBack) where T : UnityEngine.Object
+    {
+        if (keyName == null)
+        {
+            callBack?.Invoke(null);
+            return;
+        }
+
+        if (listModel.TryGetValue(id, out T value))
+        {
+            callBack?.Invoke(value);
+            return;
+        }
+
+        LoadAddressablesUtil.LoadAssetAsync<T>(keyName, data =>
+        {
+            if (data.Result != null)
+                listModel.Add(id, data.Result);
             callBack?.Invoke(data.Result);
         });
     }
