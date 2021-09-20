@@ -3,6 +3,8 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.UIElements;
+
 public class NodeBaseEditorWindow : EditorWindow
 {
     private NodeBaseView nodeView;
@@ -16,7 +18,7 @@ public class NodeBaseEditorWindow : EditorWindow
 
     public void OnEnable()
     {
-        ConstructGraphView();
+        CreateGraphView();
     }
 
     public void OnDestroy()
@@ -24,7 +26,10 @@ public class NodeBaseEditorWindow : EditorWindow
         rootVisualElement.Remove(nodeView);
     }
 
-    public void ConstructGraphView()
+    /// <summary>
+    /// 构造节点面板
+    /// </summary>
+    public virtual void CreateGraphView()
     {
         nodeView = new NodeBaseView
         {
@@ -33,7 +38,47 @@ public class NodeBaseEditorWindow : EditorWindow
 
         nodeView.StretchToParentSize();
         rootVisualElement.Add(nodeView);
+
+        //添加目录
+        var toolbar = new Toolbar();
+
+        var addButton = new Button(OnClickForToolBarAddNode);
+        addButton.text = "添加节点";
+        toolbar.Add(addButton);
+
+        var saveButton = new Button(OnClickForToolBarSave);
+        saveButton.text = "保存";
+        toolbar.Add(saveButton);
+
+        var loadButton = new Button(OnClickForToolBarLoad);
+        loadButton.text = "读取";
+        toolbar.Add(loadButton);
+
+        rootVisualElement.Add(toolbar);
     }
 
+    /// <summary>
+    /// 点击-增加节点
+    /// </summary>
+    public virtual void OnClickForToolBarAddNode()
+    {
+        NodeBase node = nodeView.CreateEntryPointNode();
+        nodeView.AddElement(node);
+    }
 
+    /// <summary>
+    /// 点击-保存数据
+    /// </summary>
+    public virtual void OnClickForToolBarSave()
+    {
+
+    }
+    
+    /// <summary>
+    /// 点击-读取数据
+    /// </summary>
+    public virtual void OnClickForToolBarLoad()
+    { 
+
+    }
 }

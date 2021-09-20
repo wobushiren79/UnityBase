@@ -8,6 +8,7 @@ public class NodeBaseView : GraphView
 {
     public NodeBaseView()
     {
+        //添加背景网格
         styleSheets.Add(Resources.Load<StyleSheet>("NodeBackground"));
 
         //设置缩放
@@ -22,9 +23,7 @@ public class NodeBaseView : GraphView
         Insert(0,gird);
         gird.StretchToParentSize();
 
-
-        NodeBase node = GenerateEntryPointNode();
-        AddElement(node);
+        ClearSelection();
     }
 
     /// <summary>
@@ -60,7 +59,12 @@ public class NodeBaseView : GraphView
         return compatiblePorts;
     }
 
-    private NodeBase GenerateEntryPointNode()
+
+    /// <summary>
+    /// 创建一个节点
+    /// </summary>
+    /// <returns></returns>
+    public virtual NodeBase CreateEntryPointNode()
     {
         var node = new NodeBase
         {
