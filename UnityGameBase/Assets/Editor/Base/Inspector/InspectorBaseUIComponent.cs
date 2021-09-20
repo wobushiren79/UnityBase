@@ -37,7 +37,7 @@ public class InspectorBaseUIComponent : Editor
         GameObject objSelect = Selection.activeGameObject;
         string createfileName = GetCreateScriptFileName(objSelect);
         string currentFileName = GetCurrentScriptFileName(objSelect);
-        string templatesPath = Application.dataPath + scrpitsTemplatesPath;
+        string templatesPath = Application.dataPath + scrpitsTemplatesPath;   
 
         if (!EditorUtil.CheckIsPrefabMode(out var prefabStage))
         {
@@ -49,7 +49,7 @@ public class InspectorBaseUIComponent : Editor
         //获取最后一个/的索引
         if (path.Length == 0)
         {
-            LogUtil.Log("没有名字为" + currentFileName + "的类,请先创建");
+            LogUtil.Log("没有名字为"+ currentFileName + "的类,请先创建");
             return;
         }
         //规则替换
@@ -81,7 +81,7 @@ public class InspectorBaseUIComponent : Editor
                 //获取选中的控件
                 Dictionary<string, Component> dicSelect = HierarchySelect.dicSelectObj;
                 //对比选中的控件和属性名字是否一样
-                if (dicSelect.TryGetValue(itemKey.Replace("ui_", ""), out Component itemComponent))
+                if (dicSelect.TryGetValue(itemKey.Replace("ui_",""),out Component itemComponent))
                 {
                     ReflexUtil.SetValueByName(uiComponent, itemKey, itemComponent);
                 }
@@ -105,11 +105,20 @@ public class InspectorBaseUIComponent : Editor
         dicReplaceData.Add("#ClassName#", className);
         Dictionary<string, Component> dicSelect = HierarchySelect.dicSelectObj;
         StringBuilder content = new StringBuilder();
+        //获取基类
+        GameObject objSelect = Selection.activeGameObject;
+        BaseMonoBehaviour uiComponent = objSelect.GetComponent<BaseMonoBehaviour>();
+        Dictionary<string,Type> dicBaseTypes =  ReflexUtil.GetAllNameAndTypeFromBase(uiComponent);
+
         foreach (var itemSelect in dicSelect)
         {
             if (itemSelect.Value == null)
                 continue;
             Type type = itemSelect.Value.GetType();
+
+            //如果基类里面已经有了这个属性，则不再添加
+            if(dicBaseTypes.ContainsKey($"ui_{itemSelect.Key}"))
+                continue;
             content.Append("    public " + type.Name + " ui_" + itemSelect.Key + ";\r\n\r\n");
         }
         dicReplaceData.Add("#PropertyList#", content.ToString());
