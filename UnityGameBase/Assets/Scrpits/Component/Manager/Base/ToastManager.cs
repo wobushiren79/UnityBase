@@ -18,7 +18,7 @@ public class ToastManager : BaseManager
         //加载Toast容器
         GameObject toastListModel = LoadResourcesUtil.SyncLoadData<GameObject>("UI/ToastList");
         GameObject objToastList = Instantiate(gameObject, toastListModel);
-        objToastContainer = CptUtil.GetCptInChildrenByName<Transform>(objToastList, "Container").gameObject;
+        objToastContainer = objToastList.transform.GetComponentInChildren("Container").gameObject;
     }
 
     /// <summary>

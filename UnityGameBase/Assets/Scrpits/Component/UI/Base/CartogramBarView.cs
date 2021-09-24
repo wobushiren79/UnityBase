@@ -19,7 +19,7 @@ public class CartogramBarView : CartogramBaseView
     /// </summary>
     public void CreateBar()
     {
-        CptUtil.RemoveChildsByActive(objItemContainer);
+        objItemContainer.transform.DestroyAllChild(true);
         if (listCartogramData == null)
             return;
         if (listCartogramData.Count == 0)

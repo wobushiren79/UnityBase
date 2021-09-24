@@ -47,7 +47,7 @@ public class ReflexUtil : ScriptableObject
             {
                 continue;
             }
-            Component tmpCom = CptUtil.GetCptInChildrenByName(obj.gameObject, field.Name.Replace(markStr, ""), field.FieldType, true);
+            Component tmpCom = obj.GetComponentInChildren(field.Name.Replace(markStr, ""), field.FieldType, true);
             if (tmpCom == null)
             {
                 //Debug.LogWarning("window " + trueType.Name + ",can not find：" + field.Name.Replace(markStr, ""));

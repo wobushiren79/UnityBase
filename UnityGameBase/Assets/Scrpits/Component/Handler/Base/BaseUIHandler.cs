@@ -13,9 +13,9 @@ public class BaseUIHandler<T, M> : BaseHandler<T,M>
     public int sortingOrder = 0;
     protected override void Awake()
     {
-        canvas = CptUtil.AddCpt<Canvas>(gameObject);
-        canvasScaler = CptUtil.AddCpt<CanvasScaler>(gameObject);
-        graphicRaycaster = CptUtil.AddCpt<GraphicRaycaster>(gameObject);
+        canvas = transform.AddComponentEX<Canvas>();
+        canvasScaler = transform.AddComponentEX<CanvasScaler>();
+        graphicRaycaster = transform.AddComponentEX<GraphicRaycaster>();
         ChangeUIRenderMode(RenderMode.ScreenSpaceOverlay);
     }
 
