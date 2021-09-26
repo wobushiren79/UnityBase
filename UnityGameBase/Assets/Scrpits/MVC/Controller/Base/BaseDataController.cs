@@ -21,7 +21,7 @@ public class BaseDataController : BaseMVCController<BaseDataModel, IBaseDataView
         for (int i = 0; i < listData.Count; i++)
         {
             BaseDataBean itemData = listData[i];
-            mMapData.Add(EnumUtil.GetEnum<BaseDataEnum>(itemData.name), itemData);
+            mMapData.Add(itemData.name.GetEnum<BaseDataEnum>(), itemData);
         }
     }
 

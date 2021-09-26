@@ -23,7 +23,7 @@ public class DialogHandler : BaseUIHandler<DialogHandler, DialogManager>
     }
     public T CreateDialog<T>(DialogEnum dialogType, Action<DialogView, DialogBean> actionSubmit, Action<DialogView, DialogBean> actionCancel, DialogView.IDialogCallBack callBack, DialogBean dialogBean, float delayDelete) where T : DialogView
     {
-        string dialogName = EnumUtil.GetEnumName(dialogType);
+        string dialogName = dialogType.GetEnumName();
         GameObject objDialogModel = manager.GetDialogModel(dialogName);
         if (objDialogModel == null)
         {

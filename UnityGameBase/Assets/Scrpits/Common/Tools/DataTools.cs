@@ -2,22 +2,22 @@
 using UnityEditor;
 using System.Collections.Generic;
 
-public class DataTools 
+public class DataTools
 {
     /// <summary>
     /// 获取前置条件
     /// </summary>
     /// <returns></returns>
-    public static List<T> GetListData<T,E>(string data) where T : DataBean<E>,new()
+    public static List<T> GetListData<T, E>(string data) where T : DataBean<E>, new()
     {
         List<T> listData = new List<T>();
-        List<string> listDataStr = StringUtil.SplitBySubstringForListStr(data, '|');
+        List<string> listDataStr = data.SplitForListStr('|');
         foreach (string itemData in listDataStr)
         {
-            if (CheckUtil.StringIsNull(itemData))
+            if (itemData.IsNull())
                 continue;
-            List<string> itemListData = StringUtil.SplitBySubstringForListStr(itemData, ':');
-            E dataType = EnumUtil.GetEnum<E>(itemListData[0]);
+            List<string> itemListData = itemData.SplitForListStr(':');
+            E dataType = itemListData[0].GetEnum<E>();
             string dataValue = itemListData[1];
 
             T dataBean = new T();

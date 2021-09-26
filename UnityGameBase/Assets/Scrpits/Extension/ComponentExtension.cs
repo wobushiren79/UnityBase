@@ -361,6 +361,29 @@ public static class ComponentExtension
         return selfComponent;
     }
 
+    /// <summary>
+    /// 展示OBJ
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="selfComponent"></param>
+    /// <param name="isShow"></param>
+    /// <returns></returns>
+    public static T ShowObj<T>(this T selfComponent,bool isShow = true) where T : Component
+    {
+        selfComponent.gameObject.SetActive(isShow);
+        return selfComponent;
+    }
 
+    /// <summary>
+    /// 展示OBJ
+    /// </summary>
+    /// <param name="selfObj"></param>
+    /// <param name="isShow"></param>
+    /// <returns></returns>
+    public static GameObject ShowObj(this GameObject selfObj, bool isShow = true)
+    {
+        selfObj.SetActive(isShow);
+        return selfObj;
+    }
 
 }

@@ -1,9 +1,8 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
 using UnityEditor;
-using System.Collections.Generic;
-using System.Text;
+using UnityEngine;
 
-public class RandomUtil
+public static class RandomExtension 
 {
     /// <summary>
     /// 随机获取枚举的一个值
@@ -22,9 +21,9 @@ public class RandomUtil
     /// <typeparam name="T"></typeparam>
     /// <param name="list"></param>
     /// <returns></returns>
-    public static T GetRandomDataByList<T>(List<T> list)
+    public static T GetRandomData<T>(this List<T> list)
     {
-        if (CheckUtil.ListIsNull(list))
+        if (list.IsNull())
             return default;
         int position = Random.Range(0, list.Count);
         return list[position];
@@ -37,17 +36,17 @@ public class RandomUtil
     /// <param name="list"></param>
     /// <param name="number"></param>
     /// <returns></returns>
-    public static List<T> GetRandomDataByListForNumberNR<T>(List<T> list, int number)
+    public static List<T> GetRandomDataForNumberNR<T>(this List<T> list, int number)
     {
         List<T> listData = new List<T>();
-        if (CheckUtil.ListIsNull(list))
+        if (list.IsNull())
             return listData;
-        if (list.Count< number)
+        if (list.Count < number)
         {
             number = list.Count;
         }
         List<int> tempList = new List<int>();
-        for(int i = 0; i < number; i++)
+        for (int i = 0; i < number; i++)
         {
             int position = Random.Range(0, list.Count);
             if (!tempList.Contains(position))
@@ -69,7 +68,7 @@ public class RandomUtil
     /// <typeparam name="T"></typeparam>
     /// <param name="list"></param>
     /// <returns></returns>
-    public static IconBean GetRandomDataByIconBeanDictionary(IconBeanDictionary list)
+    public static IconBean GetRandomData(this IconBeanDictionary list)
     {
         int position = Random.Range(0, list.Count);
         int i = 0;
@@ -95,12 +94,12 @@ public class RandomUtil
     /// <param name="list"></param>
     /// <param name="expelNameStr"></param>
     /// <returns></returns>
-    public static IconBean GetRandomDataByIconBeanDictionaryExpel(IconBeanDictionary list,string expelNameStr)
+    public static IconBean GetRandomDataExpel(this IconBeanDictionary list, string expelNameStr)
     {
-        IconBean iconData= GetRandomDataByIconBeanDictionary(list);
+        IconBean iconData = GetRandomData(list);
         if (iconData.key.Contains(expelNameStr))
         {
-            return GetRandomDataByIconBeanDictionaryExpel(list, expelNameStr);
+            return GetRandomDataExpel(list, expelNameStr);
         }
         else
         {
@@ -114,7 +113,7 @@ public class RandomUtil
     /// <typeparam name="T"></typeparam>
     /// <param name="list"></param>
     /// <returns></returns>
-    public static List<T> GetRandomListByList<T>(List<T> list)
+    public static List<T> GetRandomList<T>(this List<T> list)
     {
         if (list == null)
             return list;
@@ -138,7 +137,7 @@ public class RandomUtil
     /// <typeparam name="T"></typeparam>
     /// <param name="list"></param>
     /// <returns></returns>
-    public static T[] GetRandomArrayByArray<T>(T[] list)
+    public static T[] GetRandomArray<T>(this T[] list)
     {
         if (list == null)
             return list;
@@ -162,7 +161,7 @@ public class RandomUtil
     /// <typeparam name="T"></typeparam>
     /// <param name="list"></param>
     /// <returns></returns>
-    public static T GetRandomDataByArray<T>(T[] list)
+    public static T GetRandomData<T>(this T[] list)
     {
         if (list == null)
             return default;
@@ -176,7 +175,7 @@ public class RandomUtil
     /// <typeparam name="T"></typeparam>
     /// <param name="mapData"></param>
     /// <returns></returns>
-    public static T GetRandomDataByDictionary<T>(Dictionary<long, T> mapData)
+    public static T GetRandomData<T>(this Dictionary<long, T> mapData)
     {
         int position = Random.Range(0, (int)mapData.Count);
         int tempPosition = 0;
@@ -202,9 +201,9 @@ public class RandomUtil
             return "";
 
         string chineseWords = "";
-       // Encoding gb = Encoding.GetEncoding("gb2312");
+        // Encoding gb = Encoding.GetEncoding("gb2312");
         //添加姓
-        chineseWords += GetRandomDataByArray(GeneralDataUtil.ChinesNameWords);
+        chineseWords += GetRandomData(GeneralDataUtil.ChinesNameWords);
         //添加名
         for (int i = 0; i < count - 1; i++)
         {
@@ -236,6 +235,4 @@ public class RandomUtil
         }
         return chineseWords;
     }
-
-
 }

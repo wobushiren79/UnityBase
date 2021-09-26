@@ -12,7 +12,7 @@ public class PopupHandler : BaseUIHandler<PopupHandler, PopupManger>
 
     public T CreatePopup<T>(PopupEnum popup) where T : PopupShowView
     {
-        string popupName = EnumUtil.GetEnumName(popup);
+        string popupName = popup.GetEnumName();
         return CreatePopup<T>(popupName);
     }
 

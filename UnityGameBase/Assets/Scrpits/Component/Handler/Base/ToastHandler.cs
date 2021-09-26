@@ -45,7 +45,7 @@ public class ToastHandler : BaseUIHandler<ToastHandler,ToastManager>
     /// <param name="destoryTime"></param>
     public void CreateToast<T>(ToastEnum toastType, Sprite toastIconSp, string toastContentStr, float destoryTime) where T : ToastView
     {
-        string toastName = EnumUtil.GetEnumName(toastType);
+        string toastName = toastType.GetEnumName();
         GameObject objToastModel= manager.GetToastModel(toastName);
         if (objToastModel == null)
         {
