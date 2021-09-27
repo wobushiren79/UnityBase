@@ -23,6 +23,7 @@ public class Test : BaseMonoBehaviour
 
     private void Start()
     {
+
         EventHandler.Instance.RegisterEvent("Test", TestEvent);
         EventHandler.Instance.RegisterEvent<string>("Test2", TestEvent2);
     }
