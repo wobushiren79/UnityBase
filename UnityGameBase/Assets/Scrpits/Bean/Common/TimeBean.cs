@@ -3,7 +3,7 @@ using UnityEditor;
 using System;
 
 [Serializable]
-public class TimeBean 
+public class TimeBean
 {
     public int year;
     public int month;
@@ -17,7 +17,7 @@ public class TimeBean
 
     }
 
-    public TimeBean(int year,int month,int day,int hour,int minute,int second)
+    public TimeBean(int year, int month, int day, int hour, int minute, int second)
     {
         this.year = year;
         this.month = month;
@@ -27,7 +27,7 @@ public class TimeBean
         this.second = second;
     }
 
-    public void SetTimeForYMD(int year,int month,int day)
+    public void SetTimeForYMD(int year, int month, int day)
     {
         this.year = year;
         this.month = month;
@@ -62,6 +62,32 @@ public class TimeBean
         }
 
         hour += addHour;
+    }
+
+    public void AddTimeForYMHMS(int addYear, int addMonth, int addDay, int addHour, int addMin, int Addsecond)
+    {
+        AddTimeForHMS(addHour, addMin, Addsecond);
+        if (hour >= 24)
+        {
+            day += (hour / 24);
+            hour = hour % 24;
+        }
+
+        day += addDay;
+        if (day >= 30)
+        {
+            month += (day / 30);
+            day = day % 30;
+        }
+
+        month += addMonth;
+        if (month >= 4)
+        {
+            year += (month / 4);
+            month = month % 4;
+        }
+
+        year += addYear;
     }
 
     /// <summary>
