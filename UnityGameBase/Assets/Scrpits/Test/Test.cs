@@ -1,40 +1,28 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 public class Test : BaseMonoBehaviour
 {
 
     private void OnGUI()
     {
-        if (GUILayout.Button("Test"))
+        if (GUILayout.Button("Create"))
         {
-            EventHandler.Instance.TriggerEvent("Test");
-            EventHandler.Instance.TriggerEvent("Test2","sadfsaf");
+            UIHandler.Instance.manager.OpenUIAndCloseOther<UITest>(UIEnum.Test);
         }
-
+        if (GUILayout.Button("Add"))
+        {
+            GameConfigBean gameConfig = GameDataHandler.Instance.manager.GetGameConfig();
+            gameConfig.uiSize += 0.1f;
+            if (gameConfig.uiSize >= 2)
+            {
+                gameConfig.uiSize = 0.5f;
+            }
+            UIHandler.Instance.ChangeUISize(gameConfig.uiSize);
+        }
     }
 
     private void Start()
     {
 
-        EventHandler.Instance.RegisterEvent("Test", TestEvent);
-        EventHandler.Instance.RegisterEvent<string>("Test2", TestEvent2);
-    }
-
-    public void TestEvent()
-    {
-        LogUtil.Log("1");
-    }
-
-    public void TestEvent2(string data)
-    {
-        LogUtil.Log("1"+data);
     }
 }
