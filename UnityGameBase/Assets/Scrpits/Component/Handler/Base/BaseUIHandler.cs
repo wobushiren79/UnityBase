@@ -11,18 +11,18 @@ public class BaseUIHandler<T, M> : BaseHandler<T, M>
 
     public int sortingOrder = 0;
 
-    protected override void Awake()
-    {
-        canvas = gameObject.AddComponentEX<Canvas>();
-        canvasScaler = gameObject.AddComponentEX<CanvasScaler>();
-        graphicRaycaster = gameObject.AddComponentEX<GraphicRaycaster>();
+    //protected override void Awake()
+    //{
+    //    canvas = gameObject.AddComponentEX<Canvas>();
+    //    canvasScaler = gameObject.AddComponentEX<CanvasScaler>();
+    //    graphicRaycaster = gameObject.AddComponentEX<GraphicRaycaster>();
 
-        canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+    //    canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
 
-        GameConfigBean gameConfig = GameDataHandler.Instance.manager.GetGameConfig();
-        canvasScaler.referenceResolution = new Vector2(1920 * gameConfig.uiSize, 1080 * gameConfig.uiSize);
-        ChangeUIRenderMode(RenderMode.ScreenSpaceOverlay);
-    }
+    //    GameConfigBean gameConfig = GameDataHandler.Instance.manager.GetGameConfig();
+    //    canvasScaler.referenceResolution = new Vector2(1920 * gameConfig.uiSize, 1080 * gameConfig.uiSize);
+    //    ChangeUIRenderMode(RenderMode.ScreenSpaceOverlay);
+    //}
 
     /// <summary>
     /// 修改UI的大小
@@ -39,21 +39,21 @@ public class BaseUIHandler<T, M> : BaseHandler<T, M>
     /// <param name="renderMode"></param>
     public void ChangeUIRenderMode(RenderMode renderMode)
     {
-        canvas.pixelPerfect = true;
-        canvas.gameObject.layer = LayerInfo.UI;
-        canvas.renderMode = renderMode;
-        switch (renderMode)
-        {
-            case RenderMode.ScreenSpaceOverlay:
-                break;
-            case RenderMode.ScreenSpaceCamera:
-                canvas.planeDistance = 1;
-                canvas.worldCamera = CameraHandler.Instance.manager.uiCamera;
-                break;
-            case RenderMode.WorldSpace:
-                break;
-        }
-        canvas.sortingLayerName = "UI";
-        canvas.sortingOrder = sortingOrder;
+        //canvas.pixelPerfect = true;
+        //canvas.gameObject.layer = LayerInfo.UI;
+        //canvas.renderMode = renderMode;
+        //switch (renderMode)
+        //{
+        //    case RenderMode.ScreenSpaceOverlay:
+        //        break;
+        //    case RenderMode.ScreenSpaceCamera:
+        //        canvas.planeDistance = 1;
+        //        canvas.worldCamera = CameraHandler.Instance.manager.uiCamera;
+        //        break;
+        //    case RenderMode.WorldSpace:
+        //        break;
+        //}
+        //canvas.sortingLayerName = "UI";
+        //canvas.sortingOrder = sortingOrder;
     }
 }

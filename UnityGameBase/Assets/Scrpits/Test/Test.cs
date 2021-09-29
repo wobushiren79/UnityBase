@@ -7,7 +7,7 @@ public class Test : BaseMonoBehaviour
     {
         if (GUILayout.Button("Create"))
         {
-            UIHandler.Instance.manager.OpenUIAndCloseOther<UITest>(UIEnum.Test);
+            UIHandler.Instance.OpenUIAndCloseOther<UITest>(UIEnum.Test);
         }
         if (GUILayout.Button("Add"))
         {
