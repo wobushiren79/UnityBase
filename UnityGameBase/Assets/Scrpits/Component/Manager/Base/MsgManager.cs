@@ -24,7 +24,7 @@ public class MsgManager : BaseManager
 
     public T ShowMsg<T>(MsgEnum msgType, string content, Vector3 msgPosition) where T : MsgView
     {
-        string msgName = EnumUtil.GetEnumName(msgType);
+        string msgName = msgType.GetEnumName();
         GameObject objMsg = CreateMsg(msgName);
         if (objMsg)
         {

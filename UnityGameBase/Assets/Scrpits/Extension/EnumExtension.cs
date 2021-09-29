@@ -1,24 +1,43 @@
-﻿using UnityEngine;
-using UnityEditor;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
 
-public class EnumUtil
+public static class EnumExtension 
 {
-    public static string GetEnumName<T>(T data)
+    /// <summary>
+    /// 获取枚举名字
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    public static string GetEnumName<T>(this T data)
     {
-         return data.ToString();
+        return data.ToString();
     }
 
-    public static T GetEnum<T>(string data)
+    /// <summary>
+    /// 获取枚举
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    public static T GetEnum<T>(this string data)
     {
         return (T)Enum.Parse(typeof(T), data);
     }
 
-    public static E GetEnum<E>(int type)
+    /// <summary>
+    /// 获取枚举
+    /// </summary>
+    /// <typeparam name="E"></typeparam>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public static E GetEnum<E>(this int type)
     {
         return (E)Enum.ToObject(typeof(E), type);
     }
+
 
     /// <summary>
     /// 获取枚举最大值
@@ -73,5 +92,4 @@ public class EnumUtil
         }
         return listDat;
     }
-
 }

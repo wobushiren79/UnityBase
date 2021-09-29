@@ -3,6 +3,23 @@ using UnityEditor;
 
 public class ProjectConfigInfo
 {
+    static ProjectConfigInfo()
+    {
+        //日志显示
+#if UNITY_EDITOR
+        Debug.unityLogger.logEnabled = true;
+#else
+        if (Debug.isDebugBuild)
+        {
+            Debug.unityLogger.logEnabled = true;
+        }
+        else
+        {
+            Debug.unityLogger.logEnabled = false;
+        }
+#endif
+    }
+
     /// <summary>
     /// 游戏版本
     /// </summary>
@@ -12,6 +29,11 @@ public class ProjectConfigInfo
     /// 是否打开日志输出
     /// </summary>
     public static readonly bool IS_OPEN_LOG_MSG = true;
+
+    /// <summary>
+    /// 游戏生成版本
+    /// </summary>
+    public readonly static ProjectBuildTypeEnum BUILD_TYPE = ProjectBuildTypeEnum.Debug;
 
     /// <summary>
     /// steamAppId

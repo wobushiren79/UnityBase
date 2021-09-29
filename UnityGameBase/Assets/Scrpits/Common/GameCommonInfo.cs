@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-public class GameCommonInfo
+public static class GameCommonInfo
 {
     //游戏用户ID
     public static string GameUserId;

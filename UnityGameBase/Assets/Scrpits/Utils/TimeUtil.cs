@@ -71,8 +71,8 @@ public class TimeUtil
     //比较时间------------------------------------------------------------------------------------------------------------
     public static TimeSpan SubtractTime(TimeBean timeOne, TimeBean timeTwo)
     {
-        DateTime dateOne = TypeConversionUtil.TimeBeanToDateTime(timeOne);
-        DateTime dateTwo = TypeConversionUtil.TimeBeanToDateTime(timeTwo);
+        DateTime dateOne = timeOne.ToDateTime();
+        DateTime dateTwo = timeTwo.ToDateTime();
         TimeSpan timeSpan = dateOne.Subtract(dateTwo);
         return timeSpan;
     }

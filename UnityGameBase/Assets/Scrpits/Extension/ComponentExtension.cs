@@ -385,4 +385,20 @@ public static class ComponentExtension
         return selfObj;
     }
 
+    /// <summary>
+    /// 查找
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="selfObj"></param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public static T FindChild<T>(this GameObject selfObj, string name) where T : Component
+    {
+        Transform tfFind = selfObj.transform.Find(name);
+        if (tfFind)
+        {
+            return tfFind.GetComponent<T>();
+        }
+        return null;
+    }
 }

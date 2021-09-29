@@ -68,7 +68,7 @@ public class SteamHandler : BaseHandler<SteamHandler, BaseManager>
         {
             details = details.Substring(0, 64);
         }
-        int[] intDetails = TypeConversionUtil.StringToInt32(details);
+        int[] intDetails = details.ToInt32();
         int[] intDetailsData = new int[64];
         intDetails.CopyTo(intDetailsData, 0);
         steamLeaderboard.UpdateLeaderboardScore(leaderboardId, score, intDetailsData, 64, callBack);

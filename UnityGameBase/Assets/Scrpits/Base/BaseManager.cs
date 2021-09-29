@@ -29,7 +29,7 @@ public class BaseManager : BaseMonoBehaviour
         List<T> models = null;
 #if UNITY_EDITOR
         //编辑器模式下直接加载资源
-        if (!CheckUtil.StringIsNull(remarkResourcesPath))
+        if (!remarkResourcesPath.IsNull())
         {
             models = LoadAssetUtil.LoadAllAssetAtPathForEditor<T>(remarkResourcesPath);
         }
@@ -53,7 +53,7 @@ public class BaseManager : BaseMonoBehaviour
         T model = null;
 #if UNITY_EDITOR
         //编辑器模式下直接加载资源
-        if (!CheckUtil.StringIsNull(remarkResourcesPath))
+        if (!remarkResourcesPath.IsNull())
         {
             model = LoadAssetUtil.LoadAssetAtPathForEditor<T>(remarkResourcesPath);
         }
@@ -84,7 +84,7 @@ public class BaseManager : BaseMonoBehaviour
         T model = null;
 #if UNITY_EDITOR
         //编辑器模式下直接加载资源
-        if (!CheckUtil.StringIsNull(remarkResourcesPath))
+        if (!remarkResourcesPath.IsNull())
         {
             model = LoadAssetUtil.LoadAssetAtPathForEditor<T>(remarkResourcesPath);
         }
@@ -119,7 +119,7 @@ public class BaseManager : BaseMonoBehaviour
         T model = null;
 #if UNITY_EDITOR
         //编辑器模式下直接加载资源
-        if (!CheckUtil.StringIsNull(remarkResourcesPath))
+        if (!remarkResourcesPath.IsNull())
         {
             model = LoadAssetUtil.LoadAssetAtPathForEditor<T>(remarkResourcesPath);
         }
@@ -237,7 +237,7 @@ public class BaseManager : BaseMonoBehaviour
         }
 #if UNITY_EDITOR
         //编辑器模式下直接加载资源
-        if (!CheckUtil.StringIsNull(remarkResourcesPath))
+        if (!remarkResourcesPath.IsNull())
         {
             spriteAtlas = LoadAssetUtil.LoadAssetAtPathForEditor<SpriteAtlas>(remarkResourcesPath);
         }
@@ -283,7 +283,7 @@ public class BaseManager : BaseMonoBehaviour
         }
 #if UNITY_EDITOR
         //编辑器模式下直接加载资源
-        if (!CheckUtil.StringIsNull(remarkResourcesPath))
+        if (!remarkResourcesPath.IsNull())
         {
             spriteAtlas = LoadAssetUtil.LoadAssetAtPathForEditor<SpriteAtlas>(remarkResourcesPath);
         }

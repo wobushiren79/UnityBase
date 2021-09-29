@@ -1,30 +1,54 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
-public class TypeConversionUtil
+using System.Text;
+using UnityEditor;
+using UnityEngine;
+
+public static class TypeExtension
 {
+    /// <summary>
+    /// Array转List
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="array"></param>
+    /// <returns></returns>
+    public static List<T> ToList<T>(this T[] array)
+    {
+       return array.ToList();
+    }
+
     /// <summary>
     /// 自定义时间格式转换系统时间格式
     /// </summary>
     /// <param name="timeBean"></param>
     /// <returns></returns>
-    public static DateTime TimeBeanToDateTime(TimeBean timeBean)
+    public static DateTime ToDateTime(this TimeBean timeBean)
     {
         DateTime dateTime = new DateTime(timeBean.year, timeBean.month, timeBean.day, timeBean.hour, timeBean.minute, timeBean.second);
         return dateTime;
     }
 
     /// <summary>
-    /// 自定义位置转为系统位置
+    /// Vector3Bean 转化为 Vector3
     /// </summary>
     /// <param name="vector3Bean"></param>
     /// <returns></returns>
-    public static Vector3 Vector3BeanToVector3(Vector3Bean vector3Bean)
+    public static Vector3 ToVector3(this Vector3Bean vector3Bean)
     {
         Vector3 vector3 = new Vector3(vector3Bean.x, vector3Bean.y, vector3Bean.z);
         return vector3;
+    }
+
+    /// <summary>
+    /// Vector3 转化为 Vector3Bean
+    /// </summary>
+    /// <param name="vector3"></param>
+    /// <returns></returns>
+    public static Vector3Bean ToVector3Bean(this Vector3 vector3)
+    {
+        Vector3Bean vector3Bean = new Vector3Bean(vector3);
+        return vector3Bean;
     }
 
     /// <summary>
@@ -32,7 +56,7 @@ public class TypeConversionUtil
     /// </summary>
     /// <param name="listVector3"></param>
     /// <returns></returns>
-    public static List<Vector2> ListV3ToListV2(List<Vector3> listVector3)
+    public static List<Vector2> ToListV2(this List<Vector3> listVector3)
     {
         List<Vector2> listVector2 = new List<Vector2>();
         foreach (Vector3 item in listVector3)
@@ -47,7 +71,7 @@ public class TypeConversionUtil
     /// </summary>
     /// <param name="listVector3"></param>
     /// <returns></returns>
-    public static List<Vector3Bean> ListV3ToListV3Bean(List<Vector3> listVector3)
+    public static List<Vector3Bean> ToListV3Bean(this List<Vector3> listVector3)
     {
         List<Vector3Bean> listVector3Bean = new List<Vector3Bean>();
         foreach (Vector3 item in listVector3)
@@ -63,33 +87,7 @@ public class TypeConversionUtil
     /// <typeparam name="T"></typeparam>
     /// <param name="list"></param>
     /// <returns></returns>
-    public static T[] ListToArray<T>(List<T> list)
-    {
-        if (list == null)
-            return null;
-        return list.ToArray();
-    }
-
-    /// <summary>
-    /// 数组转List
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="array"></param>
-    /// <returns></returns>
-    public static List<T> ArrayToList<T>(T[] array)
-    {
-        if (array == null)
-            return null;
-        return array.ToList<T>();
-    }
-
-    /// <summary>
-    /// list转数组
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="list"></param>
-    /// <returns></returns>
-    public static T[] ListToArrayFromPosition<T>(List<T> list, int position)
+    public static T[] ToArrayFromPosition<T>(this List<T> list, int position)
     {
         if (list == null)
             return null;
@@ -120,20 +118,20 @@ public class TypeConversionUtil
     /// <param name="list"></param>
     /// <param name="split"></param>
     /// <returns></returns>
-    public static string ListToStringBySplit<T>(List<T> list, string split)
+    public static string ToStringBySplit<T>(this List<T> list, string split)
     {
-        string data = "";
+        StringBuilder data = new StringBuilder();
         if (data == null)
-            return data;
+            return data.ToString();
         for (int i = 0; i < list.Count; i++)
         {
             if (i != 0)
             {
-                data += split;
+                data.Append(split);
             }
-            data += list[i].ToString();
+            data.Append(list[i].ToString());
         }
-        return data;
+        return data.ToString();
     }
 
     /// <summary>
@@ -143,20 +141,20 @@ public class TypeConversionUtil
     /// <param name="list"></param>
     /// <param name="split"></param>
     /// <returns></returns>
-    public static string ArrayToStringBySplit<T>(T[] list, string split)
+    public static string ToStringBySplit<T>(this T[] list, string split)
     {
-        string data = "";
+        StringBuilder data = new StringBuilder();
         if (data == null)
-            return data;
+            return data.ToString();
         for (int i = 0; i < list.Length; i++)
         {
             if (i != 0)
             {
-                data += split;
+                data.Append(split);
             }
-            data += list[i].ToString();
+            data.Append(list[i].ToString());
         }
-        return data;
+        return data.ToString();
     }
 
     /// <summary>
@@ -164,7 +162,7 @@ public class TypeConversionUtil
     /// </summary>
     /// <param name="color"></param>
     /// <returns></returns>
-    public static ColorBean ColorToColorBean(Color color)
+    public static ColorBean ToColorBean(this Color color)
     {
         ColorBean colorBean = new ColorBean(color.r, color.g, color.b, color.a);
         return colorBean;
@@ -176,7 +174,7 @@ public class TypeConversionUtil
     /// </summary>
     /// <param name="map"></param>
     /// <returns></returns>
-    public static List<IconBean> IconBeanDictionaryToList(IconBeanDictionary map)
+    public static List<IconBean> ToList(this IconBeanDictionary map)
     {
         List<IconBean> listData = new List<IconBean>();
         foreach (string key in map.Keys)
@@ -196,7 +194,7 @@ public class TypeConversionUtil
     /// </summary>
     /// <param name="listStr"></param>
     /// <returns></returns>
-    public static List<long> ListStrToListLong(List<string> listStr)
+    public static List<long> ToListLong(this List<string> listStr)
     {
         if (listStr == null)
             return null;
@@ -216,7 +214,7 @@ public class TypeConversionUtil
     /// </summary>
     /// <param name="arrayStr"></param>
     /// <returns></returns>
-    public static long[] ArrayStrToArrayLong(string[] arrayStr)
+    public static long[] ToArrayLong(this string[] arrayStr)
     {
         if (arrayStr == null)
             return null;
@@ -237,7 +235,7 @@ public class TypeConversionUtil
     /// </summary>
     /// <param name="arrayStr"></param>
     /// <returns></returns>
-    public static int[] ArrayStrToArrayInt(string[] arrayStr)
+    public static int[] ToArrayInt(this string[] arrayStr)
     {
         if (arrayStr == null)
             return null;
@@ -258,7 +256,7 @@ public class TypeConversionUtil
     /// </summary>
     /// <param name="arrayStr"></param>
     /// <returns></returns>
-    public static float[] ArrayStrToArrayFloat(string[] arrayStr)
+    public static float[] ToArrayFloat(this string[] arrayStr)
     {
         if (arrayStr == null)
             return null;
@@ -279,14 +277,14 @@ public class TypeConversionUtil
     /// </summary>
     /// <param name="number"></param>
     /// <returns></returns>
-    public static string NumberToChinese(int number)
+    public static string ToChinese(this int number)
     {
         if (number >= 10 || number < 0)
         {
             LogUtil.LogError("阿拉伯数字转中文数字失败");
             return "";
         }
-        string[] chineseNumberList = new string[10] { "〇", "一", "二", "三", "四", "五", "六", "七", "八", "九" };
+        string[] chineseNumberList = new string[10] { "零", "一", "二", "三", "四", "五", "六", "七", "八", "九" };
         return chineseNumberList[number];
     }
 
@@ -295,7 +293,7 @@ public class TypeConversionUtil
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    public static int[] StringToInt32(string data)
+    public static int[] ToInt32(this string data)
     {
         char[] charList = data.ToCharArray();
         int[] intList = new int[charList.Length];
@@ -312,7 +310,7 @@ public class TypeConversionUtil
     /// </summary>
     /// <param name="listInt"></param>
     /// <returns></returns>
-    public static string Int32ToString(int[] listInt)
+    public static string ToString(this int[] listInt)
     {
         char[] charList = new char[listInt.Length];
         for (int i = 0; i < listInt.Length; i++)
@@ -335,7 +333,7 @@ public class TypeConversionUtil
     /// </summary>
     /// <param name="sprite"></param>
     /// <returns></returns>
-    public static Texture2D SpriteToTex2D(Sprite sprite)
+    public static Texture2D ToTex2D(this Sprite sprite)
     {
         var targetTex = new Texture2D((int)sprite.rect.width, (int)sprite.rect.height);
         var pixels = sprite.texture.GetPixels(
@@ -353,7 +351,7 @@ public class TypeConversionUtil
     /// </summary>
     /// <param name="t2d"></param>
     /// <returns></returns>
-    public static Sprite Tex2DToSprite(Texture2D t2d)
+    public static Sprite ToSprite(this Texture2D t2d)
     {
         return Sprite.Create(t2d, new Rect(0, 0, t2d.width, t2d.height), Vector2.zero);
     }
@@ -364,7 +362,7 @@ public class TypeConversionUtil
     /// <typeparam name="T"></typeparam>
     /// <param name="listData"></param>
     /// <returns></returns>
-    public static Dictionary<long, T> ListToMap<T>(List<T> listData) where T : BaseBean
+    public static Dictionary<long, T> ToMap<T>(this List<T> listData) where T : BaseBean
     {
         Dictionary<long, T> map = new Dictionary<long, T>();
         if (listData == null)
@@ -383,7 +381,7 @@ public class TypeConversionUtil
     /// <typeparam name="T"></typeparam>
     /// <param name="mapData"></param>
     /// <returns></returns>
-    public static List<T> MapToList<T>(Dictionary<long, T> mapData)
+    public static List<T> ToList<T>(this Dictionary<long, T> mapData)
     {
         List<T> listData = new List<T>();
         foreach (var value in mapData.Values)

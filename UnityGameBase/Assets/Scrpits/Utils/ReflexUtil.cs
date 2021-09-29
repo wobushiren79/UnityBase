@@ -204,7 +204,7 @@ public class ReflexUtil : ScriptableObject
         // 5.调用方法，如果调用的是一个静态方法，就不需要第3步（创建类型的实例）
         // 相应地调用静态方法时，Invoke的第一个参数为null
         object[] parameters;
-        if (CheckUtil.ListIsNull(listParameter))
+        if (listParameter.IsNull())
         {
             parameters = new object[0];
         }

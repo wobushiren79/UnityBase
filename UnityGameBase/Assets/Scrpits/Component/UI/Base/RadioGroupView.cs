@@ -13,7 +13,7 @@ public class RadioGroupView : BaseMonoBehaviour, IRadioButtonCallBack
 
     private void Start()
     {
-        if (CheckUtil.ListIsNull(listButton))
+        if (listButton.IsNull())
         {
             return;
         }
@@ -58,7 +58,7 @@ public class RadioGroupView : BaseMonoBehaviour, IRadioButtonCallBack
         listButton.Clear();
         RadioButtonView[] rbList = GetComponentsInChildren<RadioButtonView>();
         if (rbList != null)
-            listButton = TypeConversionUtil.ArrayToList(rbList);
+            listButton = rbList.ToList();
         if (listButton != null)
             foreach (RadioButtonView itemRB in listButton)
             {
@@ -77,7 +77,7 @@ public class RadioGroupView : BaseMonoBehaviour, IRadioButtonCallBack
 
     public void RadioButtonSelected(RadioButtonView view, bool isSelect)
     {
-        if (CheckUtil.ListIsNull(listButton))
+        if (listButton.IsNull())
         {
             return;
         }

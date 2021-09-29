@@ -41,3 +41,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: UI
+    uniqueID: 3537894981
+    locked: 0
+  - name: Dialog
+    uniqueID: 597908509
+    locked: 0
+  - name: Toast
+    uniqueID: 4221820687
+    locked: 0
+  - name: Popup
+    uniqueID: 2497559263
+    locked: 0
