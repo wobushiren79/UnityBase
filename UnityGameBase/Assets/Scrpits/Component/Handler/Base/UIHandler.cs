@@ -12,13 +12,18 @@ public class UIHandler : BaseUIHandler<UIHandler, UIManager>
     /// 获取打开的UI
     /// </summary>
     /// <returns></returns>
-    public BaseUIComponent GetOpenUI()
+    public BaseUIComponent GetOpenUI(int layer = -1)
     {
         for (int i = 0; i < manager.uiList.Count; i++)
         {
             BaseUIComponent itemUI = manager.uiList[i];
             if (itemUI.gameObject.activeSelf)
             {
+                //设置层级
+                if (layer >= 0)
+                {
+                    itemUI.transform.SetSiblingIndex(layer);
+                }
                 return itemUI;
             }
         }
@@ -47,7 +52,7 @@ public class UIHandler : BaseUIHandler<UIHandler, UIManager>
     /// </summary>
     /// <param name="uiName"></param>
     /// <returns></returns>
-    public T GetUI<T>(string uiName) where T : BaseUIComponent
+    public T GetUI<T>(string uiName, int layer = -1) where T : BaseUIComponent
     {
         if (manager.uiList == null || uiName.IsNull())
             return null;
@@ -56,10 +61,15 @@ public class UIHandler : BaseUIHandler<UIHandler, UIManager>
             BaseUIComponent itemUI = manager.uiList[i];
             if (itemUI.name.Equals(uiName))
             {
+                //设置层级
+                if (layer >= 0)
+                {
+                    itemUI.transform.SetSiblingIndex(layer);
+                }
                 return itemUI as T;
             }
         }
-        T uiComponent = manager.CreateUI<T>(uiName);
+        T uiComponent = manager.CreateUI<T>(uiName, layer);
         if (uiComponent)
         {
             return uiComponent as T;
@@ -112,7 +122,7 @@ public class UIHandler : BaseUIHandler<UIHandler, UIManager>
     /// 通过UI的名字开启UI
     /// </summary>
     /// <param name="uiName"></param>
-    public T OpenUI<T>(string uiName) where T : BaseUIComponent
+    public T OpenUI<T>(string uiName, int layer = -1) where T : BaseUIComponent
     {
         if (uiName.IsNull())
             return null;
@@ -121,11 +131,16 @@ public class UIHandler : BaseUIHandler<UIHandler, UIManager>
             BaseUIComponent itemUI = manager.uiList[i];
             if (itemUI.name.Equals(uiName))
             {
+                //设置层级
+                if (layer >= 0)
+                {
+                    itemUI.transform.SetSiblingIndex(layer);
+                }
                 itemUI.OpenUI();
                 return itemUI as T;
             }
         }
-        T uiComponent = manager.CreateUI<T>(uiName);
+        T uiComponent = manager.CreateUI<T>(uiName, layer);
         if (uiComponent)
         {
             uiComponent.OpenUI();
@@ -149,7 +164,7 @@ public class UIHandler : BaseUIHandler<UIHandler, UIManager>
     /// 通过UI的名字关闭UI
     /// </summary>
     /// <param name="uiName"></param>
-    public void CloseUI(string uiName)
+    public void CloseUI(string uiName, int layer = -1)
     {
         if (manager.uiList == null || uiName.IsNull())
             return;
@@ -158,6 +173,11 @@ public class UIHandler : BaseUIHandler<UIHandler, UIManager>
             BaseUIComponent itemUI = manager.uiList[i];
             if (itemUI.name.Equals(uiName))
             {
+                //设置层级
+                if (layer >= 0)
+                {
+                    itemUI.transform.SetSiblingIndex(layer);
+                }
                 itemUI.CloseUI();
             }
         }
@@ -189,7 +209,7 @@ public class UIHandler : BaseUIHandler<UIHandler, UIManager>
     /// 通过UI的名字开启UI并关闭其他UI
     /// </summary>
     /// <param name="uiName"></param>
-    public T OpenUIAndCloseOther<T>(string uiName) where T : BaseUIComponent
+    public T OpenUIAndCloseOther<T>(string uiName, int layer = -1) where T : BaseUIComponent
     {
         if (manager.uiList == null || uiName.IsNull())
             return null;
@@ -203,7 +223,7 @@ public class UIHandler : BaseUIHandler<UIHandler, UIManager>
                     itemUI.CloseUI();
             }
         }
-        return OpenUI<T>(uiName);
+        return OpenUI<T>(uiName, layer);
     }
 
     /// <summary>
@@ -212,16 +232,16 @@ public class UIHandler : BaseUIHandler<UIHandler, UIManager>
     /// <typeparam name="T"></typeparam>
     /// <param name="ui"></param>
     /// <returns></returns>
-    public T OpenUIAndCloseOther<T>(UIEnum uiEnum) where T : BaseUIComponent
+    public T OpenUIAndCloseOther<T>(UIEnum uiEnum, int layer = -1) where T : BaseUIComponent
     {
-        return OpenUIAndCloseOther<T>(uiEnum.GetEnumName());
+        return OpenUIAndCloseOther<T>(uiEnum.GetEnumName(), layer);
     }
 
     /// <summary>
     /// 通过UI开启UI并关闭其他UI
     /// </summary>
     /// <param name="uiName"></param>
-    public void OpenUIAndCloseOther(BaseUIComponent uiComponent)
+    public void OpenUIAndCloseOther(BaseUIComponent uiComponent, int layer = -1)
     {
         if (manager.uiList == null || uiComponent == null)
             return;
@@ -238,6 +258,11 @@ public class UIHandler : BaseUIHandler<UIHandler, UIManager>
             BaseUIComponent itemUI = manager.uiList[i];
             if (itemUI == uiComponent)
             {
+                //设置层级
+                if (layer >= 0)
+                {
+                    itemUI.transform.SetSiblingIndex(layer);
+                }
                 itemUI.OpenUI();
             }
         }
@@ -261,7 +286,7 @@ public class UIHandler : BaseUIHandler<UIHandler, UIManager>
     /// 根据名字刷新UI
     /// </summary>
     /// <param name="uiName"></param>
-    public void RefreshUI(string uiName)
+    public void RefreshUI(string uiName, int layer = -1)
     {
         if (manager.uiList == null || uiName.IsNull())
             return;
@@ -270,6 +295,11 @@ public class UIHandler : BaseUIHandler<UIHandler, UIManager>
             BaseUIComponent itemUI = manager.uiList[i];
             if (itemUI.name.Equals(uiName))
             {
+                //设置层级
+                if (layer >= 0)
+                {
+                    itemUI.transform.SetSiblingIndex(layer);
+                }
                 itemUI.RefreshUI();
             }
         }
@@ -279,9 +309,9 @@ public class UIHandler : BaseUIHandler<UIHandler, UIManager>
     /// 根据枚举刷新UI
     /// </summary>
     /// <param name="uiEnum"></param>
-    public void RefreshUI(UIEnum uiEnum)
+    public void RefreshUI(UIEnum uiEnum, int layer = -1)
     {
-        RefreshUI(uiEnum.GetEnumName());
+        RefreshUI(uiEnum.GetEnumName(), layer);
     }
 
     /// <summary>
@@ -300,24 +330,39 @@ public class UIHandler : BaseUIHandler<UIHandler, UIManager>
     /// Toast提示
     /// </summary>
     /// <param name="hintContent"></param>
-    public void ToastHint(string hintContent)
+    public T ToastHint<T>(string hintContent) where T : ToastView
     {
-        manager.CreateToast<ToastView>(ToastEnum.Normal, null, hintContent, 5);
+        ToastBean toastData = new ToastBean(ToastEnum.Normal, hintContent);
+        return manager.CreateToast<T>(toastData);
     }
 
-    public void ToastHint(string hintContent, float destoryTime)
+    public T ToastHint<T>(string hintContent, float destoryTime) where T : ToastView
     {
-        manager.CreateToast<ToastView>(ToastEnum.Normal, null, hintContent, destoryTime);
+        ToastBean toastData = new ToastBean(ToastEnum.Normal, hintContent, destoryTime);
+        return manager.CreateToast<T>(toastData);
     }
 
-    public void ToastHint(Sprite toastIconSp, string hintContent)
+    public T ToastHint<T>(Sprite toastIconSp, string hintContent) where T : ToastView
     {
-        manager.CreateToast<ToastView>(ToastEnum.Normal, toastIconSp, hintContent, 5);
+        ToastBean toastData = new ToastBean(ToastEnum.Normal, hintContent, toastIconSp);
+        return manager.CreateToast<T>(toastData);
     }
 
-    public void ToastHint(Sprite toastIconSp, string hintContent, float destoryTime)
+    public T ToastHint<T>(Sprite toastIconSp, string hintContent, float destoryTime) where T : ToastView
     {
-        manager.CreateToast<ToastView>(ToastEnum.Normal, toastIconSp, hintContent, destoryTime);
+        ToastBean toastData = new ToastBean(ToastEnum.Normal, hintContent, toastIconSp, destoryTime);
+        return manager.CreateToast<T>(toastData);
+    }
+
+    /// <summary>
+    /// 展示气泡
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="popup"></param>
+    /// <returns></returns>
+    public T ShowPopup<T>(PopopBean popupData) where T : PopupShowView
+    {
+        return manager.CreatePopup<T>(popupData);
     }
 
 }

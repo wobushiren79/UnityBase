@@ -11,9 +11,40 @@ public class UIManager : BaseUIManager
     public List<DialogView> dialogList = new List<DialogView>();
 
     //所有的dialog模型
-    public Dictionary<string, GameObject> listDialogModel = new Dictionary<string, GameObject>();
+    public Dictionary<string, GameObject> dicDialogModel = new Dictionary<string, GameObject>();
     //所有的Toast模型
-    public Dictionary<string, GameObject> listToastModel = new Dictionary<string, GameObject>();
+    public Dictionary<string, GameObject> dicToastModel = new Dictionary<string, GameObject>();
+    //所有Popup模型
+    public Dictionary<string, GameObject> dicPopupModel = new Dictionary<string, GameObject>();
+
+    /// <summary>
+    /// 获取弹窗模型
+    /// </summary>
+    /// <param name="dialogName"></param>
+    /// <returns></returns>
+    public GameObject GetDialogModel(string dialogName)
+    {
+        return GetModelForResources(dicDialogModel, $"UI/Dialog/{dialogName}");
+    }
+
+    /// <summary>
+    /// 获取toast模型
+    /// </summary>
+    /// <returns></returns>
+    public GameObject GetToastModel(string toastName)
+    {
+        return GetModelForResources(dicToastModel, $"UI/Toast/{toastName}");
+    }
+
+    /// <summary>
+    /// 获取弹窗模型
+    /// </summary>
+    /// <param name="dialogName"></param>
+    /// <returns></returns>
+    public GameObject GetPopupModel(string popupName)
+    {
+        return GetModelForResources(dicPopupModel, $"UI/Popup/{popupName}");
+    }
 
     /// <summary>
     /// 创建UI
@@ -21,7 +52,7 @@ public class UIManager : BaseUIManager
     /// <typeparam name="T"></typeparam>
     /// <param name="uiName"></param>
     /// <returns></returns>
-    public T CreateUI<T>(string uiName) where T : BaseUIComponent
+    public T CreateUI<T>(string uiName, int layer = -1) where T : BaseUIComponent
     {
         //GameObject uiModel = LoadAssetUtil.SyncLoadAsset<GameObject>("ui/ui", uiName);
         BaseUIComponent uiModel = LoadResourcesUtil.SyncLoadData<BaseUIComponent>($"UI/{uiName}");
@@ -31,6 +62,11 @@ public class UIManager : BaseUIManager
             GameObject objUIComponent = Instantiate(tfContainer.gameObject, uiModel.gameObject);
             objUIComponent.SetActive(false);
             objUIComponent.name = objUIComponent.name.Replace("(Clone)", "");
+            if (layer >= 0)
+            {
+                //设置层级
+                objUIComponent.transform.SetSiblingIndex(layer);
+            }
             T uiComponent = objUIComponent.GetComponent<T>();
             uiList.Add(uiComponent);
             return uiComponent;
@@ -40,16 +76,6 @@ public class UIManager : BaseUIManager
             LogUtil.LogError("没有找到指定UI：" + "UI/" + uiName);
             return null;
         }
-    }
-
-    /// <summary>
-    /// 获取弹窗模型
-    /// </summary>
-    /// <param name="dialogName"></param>
-    /// <returns></returns>
-    public GameObject GetDialogModel(string dialogName)
-    {
-        return GetModel(listDialogModel, "ui/dialog", dialogName);
     }
 
     /// <summary>
@@ -118,40 +144,54 @@ public class UIManager : BaseUIManager
     }
 
     /// <summary>
-    /// 获取toast模型
-    /// </summary>
-    /// <returns></returns>
-    public GameObject GetToastModel(string toastName)
-    {
-        return GetModelForResources(listToastModel, $"UI/Toast/{toastName}");
-    }
-
-    /// <summary>
     /// 创建toast
     /// </summary>
     /// <param name="toastType"></param>
     /// <param name="toastIconSp"></param>
     /// <param name="toastContentStr"></param>
     /// <param name="destoryTime"></param>
-    public void CreateToast<T>(ToastEnum toastType, Sprite toastIconSp, string toastContentStr, float destoryTime) where T : ToastView
+    public T CreateToast<T>(ToastBean toastData) where T : ToastView
     {
-        string toastName = toastType.GetEnumName();
+        string toastName = toastData.toastType.GetEnumName();
         GameObject objToastModel = GetToastModel(toastName);
         if (objToastModel == null)
         {
             LogUtil.LogError("没有找到指定Toast：" + toastName);
-            return;
+            return null;
         }
         Transform objToastContainer = GetUITypeContainer(UITypeEnum.Toast);
         GameObject objToast = Instantiate(objToastContainer.gameObject, objToastModel);
         if (objToast)
         {
-            ToastView toastView = objToast.GetComponent<ToastView>();
-            toastView.SetData(toastIconSp, toastContentStr, destoryTime);
+            T toastView = objToast.GetComponent<T>();
+            toastView.SetData(toastData);
+            return toastView;
         }
         else
         {
             LogUtil.LogError("实例化Toast失败" + toastName);
+            return null;
         }
     }
+
+    /// <summary>
+    /// 创建气泡
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="popupName"></param>
+    /// <returns></returns>
+    public T CreatePopup<T>(PopopBean popopData) where T : PopupShowView
+    {
+        string popupName = popopData.PopupType.GetEnumName();
+        GameObject objModel = GetPopupModel(popupName);
+        if (objModel == null)
+        {
+            LogUtil.LogError("没有找到指定popup：" + popupName);
+            return default(T);
+        }
+        Transform objPopupContainer = GetUITypeContainer(UITypeEnum.Popup);
+        GameObject objPopup = Instantiate(objPopupContainer.gameObject, objModel);
+        return objPopup.GetComponent<T>();
+    }
+
 }
