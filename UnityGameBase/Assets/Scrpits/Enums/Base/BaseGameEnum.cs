@@ -58,8 +58,8 @@ public enum DirectionEnum
 /// </summary>
 public enum LanguageEnum
 {
-    cn = 1,
-    en = 2,
+    cn = 0,
+    en = 1,
 }
 
 /// <summary>
