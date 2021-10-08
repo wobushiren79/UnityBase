@@ -8,6 +8,13 @@ using UnityEngine.UI;
 
 public class UIHandler : BaseUIHandler<UIHandler, UIManager>
 {
+    protected override void Awake()
+    {
+        base.Awake();
+        GameConfigBean gameConfig = GameDataHandler.Instance.manager.GetGameConfig();
+        ChangeUISize(gameConfig.uiSize);
+    }
+
     /// <summary>
     /// 获取打开的UI
     /// </summary>
@@ -321,9 +328,9 @@ public class UIHandler : BaseUIHandler<UIHandler, UIManager>
     /// <param name="dialogBean"></param>
     /// <param name="delayDelete"></param>
     /// <returns></returns>
-    public T ShowDialog<T>(DialogBean dialogBean, float delayDelete = 0) where T : DialogView
+    public T ShowDialog<T>(DialogBean dialogBean) where T : DialogView
     {
-        return manager.CreateDialog<T>(dialogBean, delayDelete);
+        return manager.CreateDialog<T>(dialogBean);
     }
 
     /// <summary>
@@ -336,9 +343,9 @@ public class UIHandler : BaseUIHandler<UIHandler, UIManager>
         return manager.CreateToast<T>(toastData);
     }
 
-    public T ToastHint<T>(string hintContent, float destoryTime) where T : ToastView
+    public T ToastHint<T>(string hintContent, float showTime) where T : ToastView
     {
-        ToastBean toastData = new ToastBean(ToastEnum.Normal, hintContent, destoryTime);
+        ToastBean toastData = new ToastBean(ToastEnum.Normal, hintContent, showTime);
         return manager.CreateToast<T>(toastData);
     }
 
@@ -348,9 +355,9 @@ public class UIHandler : BaseUIHandler<UIHandler, UIManager>
         return manager.CreateToast<T>(toastData);
     }
 
-    public T ToastHint<T>(Sprite toastIconSp, string hintContent, float destoryTime) where T : ToastView
+    public T ToastHint<T>(Sprite toastIconSp, string hintContent, float showTime) where T : ToastView
     {
-        ToastBean toastData = new ToastBean(ToastEnum.Normal, hintContent, toastIconSp, destoryTime);
+        ToastBean toastData = new ToastBean(ToastEnum.Normal, hintContent, toastIconSp, showTime);
         return manager.CreateToast<T>(toastData);
     }
 

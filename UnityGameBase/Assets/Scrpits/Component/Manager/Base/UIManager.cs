@@ -24,7 +24,7 @@ public class UIManager : BaseUIManager
     /// <returns></returns>
     public GameObject GetDialogModel(string dialogName)
     {
-        return GetModelForResources(dicDialogModel, $"UI/Dialog/{dialogName}");
+        return GetModelForResources(dicDialogModel, $"UI/Dialog/Dialog{dialogName}");
     }
 
     /// <summary>
@@ -33,7 +33,7 @@ public class UIManager : BaseUIManager
     /// <returns></returns>
     public GameObject GetToastModel(string toastName)
     {
-        return GetModelForResources(dicToastModel, $"UI/Toast/{toastName}");
+        return GetModelForResources(dicToastModel, $"UI/Toast/Toast{toastName}");
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ public class UIManager : BaseUIManager
     /// <returns></returns>
     public GameObject GetPopupModel(string popupName)
     {
-        return GetModelForResources(dicPopupModel, $"UI/Popup/{popupName}");
+        return GetModelForResources(dicPopupModel, $"UI/Popup/Popup{popupName}");
     }
 
     /// <summary>
@@ -85,7 +85,7 @@ public class UIManager : BaseUIManager
     /// <param name="dialogBean"></param>
     /// <param name="delayDelete"></param>
     /// <returns></returns>
-    public T CreateDialog<T>(DialogBean dialogBean, float delayDelete = 0) where T : DialogView
+    public T CreateDialog<T>(DialogBean dialogBean) where T : DialogView
     {
         string dialogName = dialogBean.dialogType.GetEnumName();
         GameObject objDialogModel = GetDialogModel(dialogName);
@@ -104,8 +104,8 @@ public class UIManager : BaseUIManager
             dialogView.SetCallBack(dialogBean.callBack);
             dialogView.SetAction(dialogBean.actionSubmit, dialogBean.actionCancel);
             dialogView.SetData(dialogBean);
-            if (delayDelete != 0)
-                dialogView.SetDelayDelete(delayDelete);
+            if (dialogBean.delayDelete != 0)
+                dialogView.SetDelayDelete(dialogBean.delayDelete);
 
             //改变焦点
             EventSystem.current.SetSelectedGameObject(objDialog);
@@ -160,7 +160,8 @@ public class UIManager : BaseUIManager
             return null;
         }
         Transform objToastContainer = GetUITypeContainer(UITypeEnum.Toast);
-        GameObject objToast = Instantiate(objToastContainer.gameObject, objToastModel);
+        Transform objToastContainerList = objToastContainer.Find("ToastList").Find("Container");
+        GameObject objToast = Instantiate(objToastContainerList.gameObject, objToastModel);
         if (objToast)
         {
             T toastView = objToast.GetComponent<T>();

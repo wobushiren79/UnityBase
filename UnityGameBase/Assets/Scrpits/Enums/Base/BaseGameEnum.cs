@@ -58,8 +58,8 @@ public enum DirectionEnum
 /// </summary>
 public enum LanguageEnum
 {
-    cn = 1,
-    en = 2,
+    cn = 0,
+    en = 1,
 }
 
 /// <summary>
@@ -81,4 +81,13 @@ public enum SeasonsEnum
     Summer = 2,//夏
     Autumn = 3,//秋
     Winter = 4,//冬
+}
+
+/// <summary>
+/// 输入类型枚举
+/// </summary>
+public enum InputActionUIEnum
+{
+    F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12,
+    ESC,
 }
