@@ -2,6 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Utilities;
 
 public class InputManager : BaseManager
 {
@@ -13,6 +14,27 @@ public class InputManager : BaseManager
     public virtual void Awake()
     {
         inputActions = new GameInputActions();
+        //----------------------------------------------------------
+        GameInputActions.UIActions uiActions = inputActions.UI;
+        InputActionMap inputActionMapUI = uiActions.Get();
+        ReadOnlyArray<InputAction> listUIData = inputActionMapUI.actions;
+
+        foreach (var itemData in listUIData)
+        {
+            itemData.Enable();
+            dicInputUI.Add(itemData.name.GetEnum<InputActionUIEnum>(), itemData);
+        }
+
+        //----------------------------------------------------------
+        GameInputActions.PlayerActions playerActions = inputActions.Player;
+        InputActionMap inputActionMapPlayer = playerActions.Get();
+        ReadOnlyArray<InputAction> listPlayerData = inputActionMapPlayer.actions;
+
+        foreach (var itemData in listPlayerData)
+        {
+            itemData.Enable();
+            dicInputPlayer.Add(itemData.name, itemData);
+        }
     }
 
     /// <summary>
