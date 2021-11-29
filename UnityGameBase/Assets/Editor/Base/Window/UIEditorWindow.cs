@@ -18,16 +18,12 @@ public class UIEditorWindow : EditorWindow
     public Font SelectNewFont;
     static Font NewFont;
 
-    static float NewLineSpacing;
-
     private void OnGUI()
     {
         SelectOldFont = (Font)EditorGUILayout.ObjectField("请选择想更换的字体", SelectOldFont, typeof(Font), true, GUILayout.MinWidth(100));
         OldFont = SelectOldFont;
         SelectNewFont = (Font)EditorGUILayout.ObjectField("请选择新的字体", SelectNewFont, typeof(Font), true, GUILayout.MinWidth(100));
         NewFont = SelectNewFont;
-        NewLineSpacing = 1;
-        NewLineSpacing = EditorGUILayout.FloatField("新行间距", NewLineSpacing);
 
         if (GUILayout.Button("更换选中的预制体"))
         {
@@ -37,7 +33,7 @@ public class UIEditorWindow : EditorWindow
             }
             else
             {
-                Change();
+                ChangeForText();
             }
         }
         if (GUILayout.Button("更换文件夹下所有的预制体"))
@@ -48,12 +44,12 @@ public class UIEditorWindow : EditorWindow
             }
             else
             {
-                ChangeSelectFloud();
+                ChangeSelectFloudForText();
             }
         }
     }
 
-    public static void Change()
+    public static void ChangeForText()
     {
         Object[] Texts = Selection.GetFiltered(typeof(Text), SelectionMode.Deep);
         Debug.Log("找到" + Texts.Length + "个Text，即将处理");
@@ -67,7 +63,6 @@ public class UIEditorWindow : EditorWindow
                 if (AimText.font == OldFont)
                 {
                     AimText.font = NewFont;
-                    AimText.lineSpacing = NewLineSpacing;
                     //Debug.Log(AimText.name + ":" + AimText.text);
                     EditorUtility.SetDirty(AimText);
                     count++;
@@ -77,7 +72,7 @@ public class UIEditorWindow : EditorWindow
         Debug.Log("字体更换完毕！更换了" + count + "个");
     }
 
-    public static void ChangeSelectFloud()
+    public static void ChangeSelectFloudForText()
     {
 
         object[] objs = Selection.GetFiltered(typeof(object), SelectionMode.DeepAssets);
@@ -97,7 +92,6 @@ public class UIEditorWindow : EditorWindow
                 if (text.font == OldFont)
                 {
                     text.font = NewFont;
-                    text.lineSpacing = NewLineSpacing;
                     EditorUtility.SetDirty(text);
                     count++;
                 }
